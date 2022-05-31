@@ -1,0 +1,4 @@
+/var/lib/snapd/snap/clion/190/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/var/lib/snapd/snap/clion/190/bin/ninja/linux/ninja -G Ninja -S /home/tadas/Documents/Dev/Riceify -B /home/tadas/Documents/Dev/Riceify/cmake-build-debug
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/tadas/Documents/Dev/Riceify/cmake-build-debug
