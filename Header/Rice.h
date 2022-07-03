@@ -10,9 +10,11 @@
 #include <ctime>
 #include <sys/statvfs.h>
 #include <iostream>
+#include <filesystem>
 #include <unistd.h>
 #include "Colors.h"
 #include "Nav.h"
+namespace fs = std::filesystem;
 class Rice{
 private:
     int packageNumbers;
@@ -22,13 +24,28 @@ private:
     std::vector<std::string> packageNames;
     std::time_t creationDate;
     std::vector<Rice> rices;
+    std::string homedir = getenv("HOME");
+    std::string dbDir = homedir + "/Riceify/db.rcf";
+    std::vector<fs::path>files;
 public:
-    Rice(int _packageNumbers, unsigned long _memSize, const std::string& _riceNames, std::time_t _creationDate){
+    Rice(int _packageNumbers, unsigned long _memSize, const std::string& _riceNames, const std::vector<fs::path>&_files, std::time_t _creationDate){
         packageNumbers = _packageNumbers;
         memSize = _memSize;
         riceName = _riceNames;
         //packageNames = _packageNames;
+        files = _files;
         creationDate = _creationDate;
+
+        if(!fs::exists(dbDir)) {
+            try{
+                system("mkdir ~/Riceify && cd ~/Riceify/ && touch db.rcf");
+                std::cout << "[" << KRED << "!" << RST << "] Created database at " << dbDir << std::endl;
+            }
+            catch(...){
+                throw std::exception();
+            }
+        }
+        else std::cout << "[" << KGRN << "*" << RST << "] Database exists ;) "<< std::endl;
     }
 
     ~Rice()= default;
@@ -77,7 +94,7 @@ public:
             std::cout << "Creation date : " <<  ct << std::endl;
             std::cout << "Rice name : " << riceName << std::endl;
             memSize = stat.f_frsize;
-            Rice *r = new Rice(0, memSize, riceName, creationDate);
+            Rice *r = new Rice(0, memSize, riceName, static_cast<const std::vector<fs::path>>(NULL), creationDate);
             rices.push_back(*r);
         }
         catch(std::exception exception){
@@ -89,7 +106,6 @@ public:
         "\nCreation date : " << KGRN << creationDate << RST << std::endl;
         std::cout << KRED << "You will be redirected in 3 seconds." << RST << std::endl;
         sleep(3);
-
     }
     void ListRice() {
         std::cout << "Rices : [" << rices.size() << "]" << std::endl;

@@ -27,19 +27,18 @@ namespace fs = std::experimental::filesystem;
 #include <pwd.h>
 #include <string>
 #include <fstream>
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 
 class Nav{
 private:
     GetDirectories getDirectories = *new GetDirectories();
-    Rice *rice = new Rice(0, 0, " ", NULL);
+    Rice *rice = new Rice(0, 0, " ", static_cast<const std::vector<fs::path>>(NULL), NULL);
     int choice{};
     std::ifstream fs;
     std::string homedir = getenv("HOME");
     std::string fullDir = homedir + "/";
 public:
     int Print(){
-        menu:
         printf("Made by <3 by ZukiDev#0001\n\nPlease make a choice :\n1 - Scan files\n2 - Save rice\n3 - Rice list\n4 - Switch to\n5 - Delete rice\n");
         std::cin >> choice;
         ChooseActions(choice);
@@ -53,8 +52,12 @@ public:
                 getDirectories.FileExists(".zshrc");
                 getDirectories.FileExists(".cshrc");
                 getDirectories.FileExists(".kshrc");
-                for (const auto & entry : fs::directory_iterator(fullDir))
-                    std::cout << KYEL << "File detected :" << entry.path() << RST << std::endl;
+                for (const auto & entry : fs::directory_iterator(fullDir)) {
+                    std::cout << "File detected :" << KYEL << entry.path() << RST << std::endl;
+                }
+                    std::cout << KRED << "You will be redirected in 5 seconds." << RST << std::endl;
+                    sleep(5);
+                    Print();
                 break;
             case 2: //save rice
                 rice->addRice();
@@ -69,7 +72,7 @@ public:
                 exit(0);
                 break;
             default:
-                std::cerr << "Unknown choice, aborting.";
+                std::cerr << "Unknown choice, aborting.\n";
                 exit(-1);
                 break;
         }

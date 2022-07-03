@@ -6,7 +6,7 @@
 # It is included in the main 'build.ninja'.
 
 # =============================================================================
-# Project: Riceify
+# Project: Riceify_
 # Configurations: Debug
 # =============================================================================
 # =============================================================================
@@ -42,7 +42,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = /var/lib/snapd/snap/clion/190/bin/cmake/linux/bin/cmake --regenerate-during-build -S/home/tadas/Documents/Dev/Riceify -B/home/tadas/Documents/Dev/Riceify/cmake-build-debug
+  command = /var/lib/snapd/snap/clion/198/bin/cmake/linux/bin/cmake --regenerate-during-build -S/home/tadas/Documents/Dev/Riceify_ -B/home/tadas/Documents/Dev/Riceify_/cmake-build-debug
   description = Re-running CMake...
   generator = 1
 
@@ -51,7 +51,7 @@ rule RERUN_CMAKE
 # Rule for cleaning all built files.
 
 rule CLEAN
-  command = /var/lib/snapd/snap/clion/190/bin/ninja/linux/ninja $FILE_ARG -t clean $TARGETS
+  command = /var/lib/snapd/snap/clion/198/bin/ninja/linux/ninja $FILE_ARG -t clean $TARGETS
   description = Cleaning all built files...
 
 
@@ -59,6 +59,6 @@ rule CLEAN
 # Rule for printing all primary targets available.
 
 rule HELP
-  command = /var/lib/snapd/snap/clion/190/bin/ninja/linux/ninja -t targets
+  command = /var/lib/snapd/snap/clion/198/bin/ninja/linux/ninja -t targets
   description = All primary targets available:
 
