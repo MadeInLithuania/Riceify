@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
-project(Riceify_)
+project(Riceify)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(Riceify main.cpp Header/GetDirectories.h Header/Colors.h Header/Rice.h Header/Nav.h Header/Banner.h Header/Nav.h)
+add_executable(Riceify main.cpp Headers/Navigation.h Headers/Rice.h Headers/Colors.h Headers/Navigation.h)

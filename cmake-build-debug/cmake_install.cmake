@@ -1,4 +1,4 @@
-# Install script for directory: /home/tadas/Documents/Dev/Riceify_
+# Install script for directory: /home/tadas/Documents/Dev/C++/Riceify
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/tadas/Documents/Dev/Riceify_/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/tadas/Documents/Dev/C++/Riceify/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
