@@ -11,6 +11,10 @@
   <li>And more ...</li>
 </ul>
 
+**Preview**
+![](https://cdn.discordapp.com/attachments/465981835785142282/1008025709668745227/ri1.png)
+![](https://cdn.discordapp.com/attachments/465981835785142282/1008025710151094302/ri2.png)
+
 **Installation:**
 
 * STILL ON WORK **
