@@ -5,7 +5,7 @@
 **Features**
 <ul>
   <li>Check the list of saved rices</li>
-  <li>Create new rice : it goes through the .config files such as Polybar, i3... with a name.</li>
+  <li>Create new rice : it goes through the .config files such as Polybar, i3... with the rice's name.</li>
   <li>Delete configuration</li>
   <li>Fetch rice info</li>
   <li>And more ...</li>
