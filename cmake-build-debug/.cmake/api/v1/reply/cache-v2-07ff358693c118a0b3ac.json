@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/tadas/Documents/Dev/Riceify/cmake-build-debug"
+			"value" : "/home/tadas/Bureau/Riceify/cmake-build-debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -79,7 +79,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "22"
+			"value" : "23"
 		},
 		{
 			"name" : "CMAKE_CACHE_PATCH_VERSION",
@@ -91,7 +91,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "3"
+			"value" : "2"
 		},
 		{
 			"name" : "CMAKE_COMMAND",
@@ -103,7 +103,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/var/lib/snapd/snap/clion/190/bin/cmake/linux/bin/cmake"
+			"value" : "/var/lib/snapd/snap/clion/204/bin/cmake/linux/bin/cmake"
 		},
 		{
 			"name" : "CMAKE_CPACK_COMMAND",
@@ -115,7 +115,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/var/lib/snapd/snap/clion/190/bin/cmake/linux/bin/cpack"
+			"value" : "/var/lib/snapd/snap/clion/204/bin/cmake/linux/bin/cpack"
 		},
 		{
 			"name" : "CMAKE_CTEST_COMMAND",
@@ -127,7 +127,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/var/lib/snapd/snap/clion/190/bin/cmake/linux/bin/ctest"
+			"value" : "/var/lib/snapd/snap/clion/204/bin/cmake/linux/bin/ctest"
 		},
 		{
 			"name" : "CMAKE_CXX_COMPILER",
@@ -411,7 +411,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/var/lib/snapd/snap/clion/190/bin/cmake/linux/bin/ccmake"
+			"value" : "/var/lib/snapd/snap/clion/204/bin/cmake/linux/bin/ccmake"
 		},
 		{
 			"name" : "CMAKE_EXECUTABLE_FORMAT",
@@ -591,7 +591,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/tadas/Documents/Dev/Riceify"
+			"value" : "/home/tadas/Bureau/Riceify"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -643,7 +643,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "/var/lib/snapd/snap/clion/190/bin/ninja/linux/ninja"
+			"value" : "/var/lib/snapd/snap/clion/204/bin/ninja/linux/ninja"
 		},
 		{
 			"name" : "CMAKE_MODULE_LINKER_FLAGS",
@@ -875,7 +875,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/var/lib/snapd/snap/clion/190/bin/cmake/linux/share/cmake-3.22"
+			"value" : "/var/lib/snapd/snap/clion/204/bin/cmake/linux/share/cmake-3.23"
 		},
 		{
 			"name" : "CMAKE_SHARED_LINKER_FLAGS",
@@ -1123,7 +1123,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/tadas/Documents/Dev/Riceify/cmake-build-debug"
+			"value" : "/home/tadas/Bureau/Riceify/cmake-build-debug"
 		},
 		{
 			"name" : "Riceify_IS_TOP_LEVEL",
@@ -1147,7 +1147,43 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/tadas/Documents/Dev/Riceify"
+			"value" : "/home/tadas/Bureau/Riceify"
+		},
+		{
+			"name" : "Riceify__BINARY_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "/home/tadas/Bureau/Riceify/cmake-build-debug"
+		},
+		{
+			"name" : "Riceify__IS_TOP_LEVEL",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "ON"
+		},
+		{
+			"name" : "Riceify__SOURCE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "/home/tadas/Bureau/Riceify"
 		}
 	],
 	"kind" : "cache",
