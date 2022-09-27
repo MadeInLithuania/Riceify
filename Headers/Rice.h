@@ -99,7 +99,6 @@ public:
         system("mkdir ~/Riceify/rices/");
         CreateFolder(riceName, homedir + "/Riceify/rices/");
         CopyFiles(riceName);
-        DisplayMenu();
     }
     //NUMBER 3
     void RemoveRice(){
@@ -152,13 +151,13 @@ public:
                 break;
         }
     }
-
+    //FINDS ONLY FILES, NOT COPYING THEM
     void GetHomeFilesAndSubfolders() {
         std::filesystem::path home = homedir;
         try{
             for (auto &p : std::filesystem::recursive_directory_iterator(home)) {
-                    files.push_back(p);
-                    std::cout << p << std::endl;
+                files.push_back(p);
+                std::cout << p << std::endl;
             }
         }catch(std::exception &ex){
             std::cout << KRED << &ex << std::endl; // WITHOUT IT THROWS what(): filesystem error: cannot increment recursive directory iterator: Permission denied
@@ -167,23 +166,28 @@ public:
     }
 
     static void CreateFolder(std::string folderName, std::string path) {
-        std::string command = "mkdir " + path + folderName;
-        try {
-            system(command.c_str());
-        }catch(std::exception &ex){
-            std::cout << "Error : " << KRED << &ex << std::endl;
+        if(!std::filesystem::exists(path + folderName)) {
+            try{
+                system(("mkdir " + path + folderName).c_str());
+                std::cout << "[" << KRED << "!" << RST << "] Created folder at " << path + folderName << std::endl;
+            }
+            catch(...){
+                //throw std::exception();
+            }
         }
+        else std::cout << "[" << KGRN << "*" << RST << "] Folder exists ;) "<< std::endl;
     }
-    static void CopyFiles(const std::string& riceName){
-        std::string fontDir = "/usr/share/fonts";
+    void CopyFiles(const std::string& riceName){
+        //std::string fontDir = "/usr/share/fonts";
         std::string cmd = "cp -r ~ ~/Riceify/rices/"
-                + riceName;//+"&& sudo cp -r" + fontDir + " ~/Riceify/rices/" + riceName;
+                          + riceName;//+"&& sudo cp -r" + fontDir + " ~/Riceify/rices/" + riceName;
         try{
             system(cmd.c_str());
         }
         catch(std::exception &e){
             std::cout << "Error : " << KRED << &e << std::endl;
         }
+        DisplayMenu();
     }
 };
 #endif //RICEIFY_RICE_H
