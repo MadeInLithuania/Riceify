@@ -55,16 +55,21 @@ public:
             for (int i = 0; i < rices.size(); ++i) {
                 std::cout << "[" << i + 1 << "]" << "\nDisk size : " <<
                           rices.at(i).memSize << "\nRice name :" <<
-                          rices.at(i).riceName << "Creation date :" <<
-                          rices.at(i).creationDate << std::endl;
+                          rices.at(i).riceName << "\nCreation date :" <<
+                          ctime(rices.at(i).creationDate) <<
+                          "=================" << std::endl;
             }
+        }
+        else{
+            std::cout << "No rices found" << std::endl;
         }
     }
     //NUMBER 1
     void ListRice() {
         GetRiceList();
-        std::cout << "The array is empty." << std::endl;
         std::cout << KRED << "You will be redirected soon." << RST << std::endl;
+        sleep(3);
+        DisplayMenu();
     }
 
     //NUMBER 2
@@ -96,8 +101,12 @@ public:
                   "\nRice name : " << KGRN << riceName << RST <<
                   "\nCreation date : " << KGRN << std::ctime(creationDate) << RST << std::endl;
         std::cout << KRED << "You will be redirected soon." << RST << std::endl;
-        system("mkdir ~/Riceify/rices/");
+        if(!std::filesystem::exists(homedir + "/Riceify/rices/")){
+            system("mkdir ~/Riceify/rices/");
+        }
         CreateFolder(riceName, homedir + "/Riceify/rices/");
+        auto r = new Rice(memSize, riceName, rices, creationDate);
+        rices.push_back(*r);
         CopyFiles(riceName);
     }
     //NUMBER 3
@@ -179,7 +188,8 @@ public:
     }
     void CopyFiles(const std::string& riceName){
         //std::string fontDir = "/usr/share/fonts";
-        std::string cmd = "cp -r ~ ~/Riceify/rices/"
+        std::cout << "Copying files..." << std::endl;
+        std::string cmd = "cp -r ~/.config ~/Riceify/rices/"
                           + riceName;//+"&& sudo cp -r" + fontDir + " ~/Riceify/rices/" + riceName;
         try{
             system(cmd.c_str());
