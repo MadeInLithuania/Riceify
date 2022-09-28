@@ -1,3 +1,0 @@
-/home/tadas/Bureau/Riceify/cmake-build-debug/CMakeFiles/Riceify.dir
-/home/tadas/Bureau/Riceify/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/tadas/Bureau/Riceify/cmake-build-debug/CMakeFiles/rebuild_cache.dir
