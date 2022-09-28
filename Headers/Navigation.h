@@ -7,14 +7,19 @@
 
 #include <iostream>
 #include "Rice.h"
+#include "logs.h"
 
 class Navigation{
 private:
     int choice{};
     Rice *rice = new Rice(0,"",{},0);
-
+    Logs logs = *new Logs();
 public:
-    static void GetHomeDir(){
+    void GetHomeDir(){
+        if(!std::filesystem::exists(logs.GetDirLogFile()))
+        {
+            system(logs.GetCmdLog().c_str());
+        }
         std::string homedir = getenv("HOME");
         std::cout << "Home directory is " << KMAG << homedir << RST << std::endl;
         std::cout << "The PID of the process is " << KMAG << getpid() << RST << std::endl;

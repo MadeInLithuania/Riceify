@@ -163,10 +163,11 @@ public:
     //FINDS ONLY FILES, NOT COPYING THEM
     void GetHomeFilesAndSubfolders() {
         std::filesystem::path home = homedir;
+        std::cout << "[" << KCYN << "*" << RST << "] Getting files and subfolders from " << KMAG << home << std::endl;
         try{
             for (auto &p : std::filesystem::recursive_directory_iterator(home)) {
                 files.push_back(p);
-                std::cout << p << std::endl;
+                //std::cout << p << std::endl;
             }
         }catch(std::exception &ex){
             std::cout << KRED << &ex << std::endl; // WITHOUT IT THROWS what(): filesystem error: cannot increment recursive directory iterator: Permission denied
