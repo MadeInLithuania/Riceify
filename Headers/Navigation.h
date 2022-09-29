@@ -1,23 +1,25 @@
 //
 // Created by tadas on 7/20/22.
 //
-//
-// Created by tadas on 7/19/22.
-//
 
 #ifndef RICEIFY_NAVIGATION_H
 #define RICEIFY_NAVIGATION_H
 
 #include <iostream>
 #include "Rice.h"
+#include "logs.h"
 
-class Navigation {
+class Navigation{
 private:
-    int choice;
+    int choice{};
     Rice *rice = new Rice(0,"",{},0);
-
+    Logs logs = *new Logs();
 public:
     void GetHomeDir(){
+        if(!std::filesystem::exists(logs.GetDirLogFile()))
+        {
+            system(logs.GetCmdLog().c_str());
+        }
         std::string homedir = getenv("HOME");
         std::cout << "Home directory is " << KMAG << homedir << RST << std::endl;
         std::cout << "The PID of the process is " << KMAG << getpid() << RST << std::endl;
@@ -44,17 +46,16 @@ public:
                 break;
 
             case 3:
-
+                rice->RemoveRice();
                 break;
             case 4:
-
+                std::cout << "SOON" << std::endl;
                 break;
             case 5:
-
+                std::cout << "Not yet !" << std::endl;
                 break;
             case 6:
-
-                break;
+                exit(1);
             default:
                 std::cout << "Invalid choice" << std::endl;
                 break;
