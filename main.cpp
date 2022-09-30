@@ -10,10 +10,3 @@ int main() {
     nav->DisplayMenu();
     return 0;
 }
-
-void SetCommandAs(std::string command, std::string newCommand) {
-    std::string path = "/usr/local/bin/" + command;
-    std::string newPath = "/usr/local/bin/" + newCommand;
-    std::string commandLine = "sudo mv " + path + " " + newPath;
-    system(commandLine.c_str());
-}

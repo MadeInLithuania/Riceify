@@ -7,19 +7,28 @@
 
 #include <iostream>
 #include "Rice.h"
-#include "logs.h"
 
 class Navigation{
 private:
     int choice{};
-    Rice *rice = new Rice(0,"",{},0);
-    Logs logs = *new Logs();
+    Rice *rice = new Rice(0,"",{},nullptr);
 public:
     void GetHomeDir(){
-        if(!std::filesystem::exists(logs.GetDirLogFile()))
+        if(!std::filesystem::exists(rice->GetDirLogFile()))
         {
-            system(logs.GetCmdLog().c_str());
+            try{
+                system(rice->GetCmdLog().c_str());
+                rice->WriteToLog("[" + Rice::GetCurrentTime() + "]" + "Created log file at " + rice->GetDirLogFile() + "\n");
+                std::cout << "[" << KRED << "!" << RST << "] Created log file at " << rice->GetDirLogFile() << std::endl;
+            }
+            catch(std::exception &e){
+                std::cout << "[" << KRED << "!" << RST << "] Failed to create log file at " << rice->GetDirLogFile() << ": " << e.what() << std::endl;
+                rice->WriteToLog("[" + Rice::GetCurrentTime() + "]" + "Failed to create log file at " + rice->GetDirLogFile() + ": " + e.what() + "\n");
+                throw std::exception();
+            }
         }
+        std::cout << "[" << KGRN << "*" << RST << "] Log file already exists at " << rice->GetDirLogFile() << std::endl;
+        rice->WriteToLog("[" + Rice::GetCurrentTime() + "] Log file already exists at " + rice->GetDirLogFile() + "\n");
         std::string homedir = getenv("HOME");
         std::cout << "Home directory is " << KMAG << homedir << RST << std::endl;
         std::cout << "The PID of the process is " << KMAG << getpid() << RST << std::endl;
@@ -31,7 +40,8 @@ public:
         std::cout << "3. Remove a rice" << std::endl;
         std::cout << "4. Edit a rice" << std::endl;
         std::cout << "5. Switch rices" << std::endl;
-        std::cout << "6. Exit" << std::endl;
+        std::cout << "6. Clear log file" << std::endl;
+        std::cout << "7. Exit" << std::endl;
         GetChoice();
     }
     void GetChoice(){
@@ -44,7 +54,6 @@ public:
             case 2:
                 rice->addRice();
                 break;
-
             case 3:
                 rice->RemoveRice();
                 break;
@@ -55,6 +64,9 @@ public:
                 std::cout << "Not yet !" << std::endl;
                 break;
             case 6:
+                rice->ClearLog();
+                break;
+            case 7:
                 exit(1);
             default:
                 std::cout << "Invalid choice" << std::endl;
