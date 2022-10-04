@@ -28,9 +28,10 @@ private:
     int choice{};
 protected:
     std::string homedir = getenv("HOME");
-    std::string dbDir = homedir + "/Riceify/db.rcf";
+    std::string dbDir = homedir + "/Riceify/data.yaml";
     std::string dirFile = homedir + "/Riceify/" + logFile;
     std::string createCmd = "touch " + dirFile;
+    std::string createDB = "mkdir ~/Riceify && cd ~/Riceify/ && touch data.yaml";
 public:
     Rice(unsigned long _memSize, const std::string& _riceName, std::vector<Rice> _files, const time_t *_creationDate) {
         memSize = _memSize;
@@ -39,10 +40,24 @@ public:
         creationDate = _creationDate;
     }
     ~Rice() = default;
+    //GETTERS
+    std::string GetRiceName(){
+        return riceName;
+    }
+    unsigned long GetMemSize() const{
+        return memSize;
+    }
+    time_t GetCreationDate(){
+        return *creationDate;
+    }
+    std::string GetDatabaseFile(){
+        return dbDir;
+    }
+
     void CheckForDatabase(){
         if(!std::filesystem::exists(dbDir)) {
             try{
-                system("mkdir ~/Riceify && cd ~/Riceify/ && touch db.rcf");
+                system("cd ~/Riceify/ && touch data.yaml");
                 std::cout << "[" << KRED << "!" << RST << "] Created database at " << dbDir << std::endl;
                 WriteToLog("[" + GetCurrentTime() + "] Created database at " + dbDir);
             }
@@ -76,7 +91,6 @@ public:
         sleep(3);
         DisplayMenu();
     }
-
     //NUMBER 2
     void addRice(){
         struct statvfs stat{};
@@ -109,7 +123,13 @@ public:
         if(!std::filesystem::exists(homedir + "/Riceify/rices/")){
             system("mkdir ~/Riceify/rices/");
         }
-        CreateFolder(riceName, homedir + "/Riceify/rices/");
+        try{
+            CreateFolder(riceName, homedir + "/Riceify/rices/");
+            WriteToLog("[" + GetCurrentTime() + "] Created rice folder at " + homedir + "/Riceify/rices/" + riceName);
+        }catch (std::exception &e){
+            WriteToLog("[" + GetCurrentTime() + "] Failed to create folder : " + e.what());
+            throw std::exception(e);
+        }
     }
     //NUMBER 3
     void RemoveRice(){
@@ -196,10 +216,14 @@ public:
         CopyFiles(riceName);
     }
     void CopyFiles(const std::string &_riceName){
-        std::string fontDir = "/usr/share/fonts";
+        std::string fontDir = "/usr/share/fonts/";
         std::cout << "Copying files..." << std::endl;
-        std::string cmd = "cp -r ~/.config ~/Riceify/rices/" + _riceName;
-        std::string fonts = "cd ~ && cp -r" + fontDir + " ~/Riceify/rices/" + riceName;
+        //USING COMMANDS
+        std::string cmd = "cp -r ~/.config ~/Riceify/rices/" + _riceName; //GOING EAT, CREATES FOLDERS SEPARATELY
+        std::string fonts = "cd ~ && sudo -S mkdir ~/Riceify/rices/" + riceName + "/usr/ && cd ~/Riceify/rices/" + riceName + "/usr/" +
+                            " && sudo -S mkdir ~/Riceify/rices/" + riceName + "/share/ && cd ~/Riceify/rices/" + riceName + "/share/"+
+                            //"&& sudo -S mkdir ~/Riceify/Rices/" + riceName + "/fonts/ " +
+                            " && sudo -S mkdir ~/Riceify/rices/" + riceName + fontDir + " && cd fonts/ && sudo -S cp -r " + fontDir + " ~/Riceify/rices/" + riceName;
         try{
             system(cmd.c_str());
             std::cout << "[" << KGRN << "*" << RST << "] Copied config files." << std::endl;
@@ -264,4 +288,5 @@ public:
         }
     }
 };
+//RICE CLASS
 #endif //RICEIFY_RICE_H

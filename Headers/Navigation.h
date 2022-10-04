@@ -7,11 +7,12 @@
 
 #include <iostream>
 #include "Rice.h"
-
+#include "Data.h"
 class Navigation{
 private:
     int choice{};
     Rice *rice = new Rice(0,"",{},nullptr);
+    //Data *data = new Data();
 public:
     void GetHomeDir(){
         if(!std::filesystem::exists(rice->GetDirLogFile()))
@@ -20,6 +21,7 @@ public:
                 system(rice->GetCmdLog().c_str());
                 rice->WriteToLog("[" + Rice::GetCurrentTime() + "]" + "Created log file at " + rice->GetDirLogFile() + "\n");
                 std::cout << "[" << KRED << "!" << RST << "] Created log file at " << rice->GetDirLogFile() << std::endl;
+
             }
             catch(std::exception &e){
                 std::cout << "[" << KRED << "!" << RST << "] Failed to create log file at " << rice->GetDirLogFile() << ": " << e.what() << std::endl;
