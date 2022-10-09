@@ -1,6 +1,6 @@
-# Riceify
+# Riceify (IN PROGRESS !)
 
-<strong>Allows you to switch beteween different rice configurations on Linux.</strong>
+<strong>Allows you to switch beteween different rice configurations on Linux / any Unix distro.</strong>
 
 **Features**
 <ul>
@@ -16,5 +16,12 @@
 ![](https://cdn.discordapp.com/attachments/465981835785142282/1008025710151094302/ri2.png)
 
 **Installation:**
+<br/>
+`git clone https://github.com/ZukiLTU/Riceify && cd Riceify/`<br/>
+`make install`
 
-* STILL ON WORK **
+**Compiling:**
+<br/>`make compile`
+
+And also, every idea is welcome ! (made with :heart:)
+
