@@ -14,35 +14,62 @@
 #include <sys/statvfs.h>
 #include <vector>
 #include <chrono>
+#include <fstream>
 #include "Colors.h"
 
 class Rice{
-#pragma err
 private:
     unsigned long memSize;
     std::string riceName;
     std::list<std::string> riceNames;
     const time_t *creationDate;
     std::vector<Rice> rices;
+    std::string description;
+    std::string logFile = "logs.log";
     std::vector<std::filesystem::path> files;
-    int choice;
+    int choice{};
 protected:
     std::string homedir = getenv("HOME");
-    std::string dbDir = homedir + "/Riceify/db.rcf";
+    std::string softwareName = "Riceify";
+    std::string ymlFileName = "data.yaml";
+    std::string dbDir = homedir + "/" + softwareName + "/" + ymlFileName;
+    std::string dirFile = homedir + "/" + softwareName + "/" + logFile;
+    std::string createCmd = "touch " + dirFile;
+    std::string createDB = "mkdir ~/" + softwareName + "&& cd ~/" + softwareName + "/ && touch data.yaml";
 public:
-    Rice(unsigned long _memSize, const std::string& _riceName, std::vector<Rice> _files, const time_t *_creationDate) {
+    Rice(unsigned long _memSize, const std::string& _riceName, std::string _desc, std::vector<Rice> _files, const time_t *_creationDate) {
         memSize = _memSize;
         riceName = _riceName;
+        description = _desc;
         _files.push_back(*this);
         creationDate = _creationDate;
+    }
+    ~Rice() = default;
+    //GETTERS
+    std::string GetRiceName(){
+        return riceName;
+    }
+    unsigned long GetMemSize() const{
+        return memSize;
+    }
+    time_t GetCreationDate(){
+        return *creationDate;
+    }
+    std::string GetDescription(){
+        return description;
+    }
+    std::string GetDatabaseFile(){
+        return dbDir;
     }
     void CheckForDatabase(){
         if(!std::filesystem::exists(dbDir)) {
             try{
-                system("mkdir ~/Riceify && cd ~/Riceify/ && touch db.rcf");
+                system("cd ~/Riceify/ && touch data.yaml");
                 std::cout << "[" << KRED << "!" << RST << "] Created database at " << dbDir << std::endl;
+                WriteToLog("[" + GetCurrentTime() + "] Created database at " + dbDir);
             }
-            catch(...){
+            catch(std::exception &e){
+                WriteToLog("[" + GetCurrentTime() + "] Failed to create database at " + dbDir + ": " + e.what());
                 throw std::exception();
             }
         }
@@ -52,7 +79,7 @@ public:
     void GetRiceList(){
         std::cout << "Rices : [" << rices.size() << "]" << std::endl;
         if(!rices.empty()){
-            for (int i = 0; i < rices.size(); ++i) {
+            for (long unsigned int i = 0; i < rices.size(); ++i) { //Experimental
                 std::cout << "[" << i + 1 << "]" << "\nDisk size : " <<
                           rices.at(i).memSize << "\nRice name :" <<
                           rices.at(i).riceName << "\nCreation date :" <<
@@ -71,12 +98,12 @@ public:
         sleep(3);
         DisplayMenu();
     }
-
     //NUMBER 2
     void addRice(){
         struct statvfs stat{};
         if (statvfs("/", &stat) != 0) {
             std::cerr << "Error (can't read the dir !)";
+            WriteToLog("[" + GetCurrentTime() + "] Error (can't read the dir !)");
             exit(-1);
         }
 
@@ -84,16 +111,17 @@ public:
         auto end = std::chrono::system_clock::now();
         std::time_t _time = std::chrono::system_clock::to_time_t(end);
         creationDate = &_time;
-        char* ct = ctime(creationDate);
         GetHomeFilesAndSubfolders();
         try {
             std::cout << "Please input the rice name :" << std::endl;
             std::cin >> riceName;
+            std::cout << "Please input the rice description :" << std::endl;
+            std::cin >> description;
             std::cout << "Rice name : " << riceName << std::endl;
             memSize = std::filesystem::space("/").available;
-            Rice *r = new Rice(memSize, riceName, rices, creationDate);
         }
         catch(std::exception &exception){
+            WriteToLog("[" + GetCurrentTime() + "]" + exception.what());
             throw std::exception(exception);
         }
         std::cout << "Success ! \n" <<
@@ -104,10 +132,14 @@ public:
         if(!std::filesystem::exists(homedir + "/Riceify/rices/")){
             system("mkdir ~/Riceify/rices/");
         }
-        CreateFolder(riceName, homedir + "/Riceify/rices/");
-        auto r = new Rice(memSize, riceName, rices, creationDate);
-        rices.push_back(*r);
-        CopyFiles(riceName);
+        try{
+            CreateFolder(riceName, homedir + "/Riceify/rices/");
+            WriteToLog("[" + GetCurrentTime() + "] Created rice folder at " + homedir + "/Riceify/rices/" + riceName);
+        }catch (std::exception &e){
+            WriteToLog("[" + GetCurrentTime() + "] Failed to create folder : " + e.what());
+            throw std::exception(e);
+        }
+        //EmitYML();
     }
     //NUMBER 3
     void RemoveRice(){
@@ -130,7 +162,8 @@ public:
         std::cout << "3. Remove a rice" << std::endl;
         std::cout << "4. Edit a rice" << std::endl;
         std::cout << "5. Switch rices" << std::endl;
-        std::cout << "6. Exit" << std::endl;
+        std::cout << "6. Clear logs" << std::endl;
+        std::cout << "7. Exit" << std::endl;
         GetChoice();
     }
     void GetChoice() {
@@ -143,7 +176,6 @@ public:
             case 2:
                 addRice();
                 break;
-
             case 3:
                 RemoveRice();
                 break;
@@ -154,6 +186,9 @@ public:
                 std::cout << "Not yet !" << std::endl;
                 break;
             case 6:
+                ClearLog();
+                break;
+            case 7:
                 exit(1);
             default:
                 std::cout << "Invalid choice" << std::endl;
@@ -167,7 +202,6 @@ public:
         try{
             for (auto &p : std::filesystem::recursive_directory_iterator(home)) {
                 files.push_back(p);
-                //std::cout << p << std::endl;
             }
         }catch(std::exception &ex){
             std::cout << KRED << &ex << std::endl; // WITHOUT IT THROWS what(): filesystem error: cannot increment recursive directory iterator: Permission denied
@@ -175,30 +209,95 @@ public:
         std::cout << "Found " << KMAG << files.size() << RST << " files." << std::endl;
     }
 
-    static void CreateFolder(std::string folderName, std::string path) {
+    void CreateFolder(const std::string& folderName, const std::string& path) {
         if(!std::filesystem::exists(path + folderName)) {
             try{
                 system(("mkdir " + path + folderName).c_str());
                 std::cout << "[" << KRED << "!" << RST << "] Created folder at " << path + folderName << std::endl;
             }
-            catch(...){
-                //throw std::exception();
+            catch(std::exception &ex){
+                std::cout << KRED << &ex << std::endl;
+                WriteToLog("[" + GetCurrentTime() + "] Error : " + ex.what());
             }
         }
         else std::cout << "[" << KGRN << "*" << RST << "] Folder exists ;) "<< std::endl;
+        auto r = new Rice(memSize, riceName, description, rices, creationDate);
+        rices.push_back(*r);
+        CopyFiles(riceName);
     }
-    void CopyFiles(const std::string& riceName){
-        //std::string fontDir = "/usr/share/fonts";
+    void CopyFiles(const std::string &_riceName){
+        std::string fontDir = "/usr/share/fonts/";
         std::cout << "Copying files..." << std::endl;
-        std::string cmd = "cp -r ~/.config ~/Riceify/rices/"
-                          + riceName;//+"&& sudo cp -r" + fontDir + " ~/Riceify/rices/" + riceName;
+        //USING COMMANDS
+        std::string cmd = "cp -r ~/.config ~/" + riceName + "/rices/" + _riceName; //GOING EAT, CREATES FOLDERS SEPARATELY
+        std::string fonts = "cd ~ && sudo -S mkdir ~/Riceify/rices/" + riceName + "/usr/ && cd ~/Riceify/rices/" + riceName + "/usr/" +
+                            " && sudo -S mkdir ~/Riceify/rices/" + riceName + "/share/ && cd ~/Riceify/rices/" + riceName + "/share/"+
+                            //"&& sudo -S mkdir ~/Riceify/Rices/" + riceName + "/fonts/ " +
+                            " && sudo -S mkdir ~/Riceify/rices/" + riceName + fontDir + " && cd fonts/ && sudo -S cp -r " + fontDir + " ~/Riceify/rices/" + riceName;
         try{
             system(cmd.c_str());
+            std::cout << "[" << KGRN << "*" << RST << "] Copied config files." << std::endl;
+            system(fonts.c_str());
+            std::cout << "[" << KGRN << "*" << RST << "] Copied fonts." << std::endl;
         }
         catch(std::exception &e){
+            WriteToLog("[" + GetCurrentTime() + "] Error : " + e.what());
             std::cout << "Error : " << KRED << &e << std::endl;
         }
         DisplayMenu();
     }
+
+    std::string GetDirLogFile()
+    {
+        return dirFile;
+    }
+    std::string GetCmdLog(){
+        return createCmd;
+    }
+
+    static std::string GetCurrentTime(){
+        time_t now = time(nullptr);
+        char* dt = ctime(&now);
+        return dt;
+    }
+
+    void WriteToLog(const std::string& message){
+        std::ofstream log(dirFile, std::ios::app);
+        log << message << std::endl;
+        log.close();
+    }
+
+    void ClearLog(){
+        char _choice;
+        std::cout << KRED << "WARNING: " << RST << "This action cannot be undone" << std::endl << "Confirm? [y/n]: ";
+        std::cin >> _choice;
+        switch (_choice) {
+            case 'y':
+                try{
+                    std::ofstream log(dirFile, std::ios::trunc);
+                    log.close();
+                }catch(std::exception &e){
+                    std::cerr << KRED << &e << std::endl;
+                    WriteToLog("[" + GetCurrentTime() + "] " + e.what());
+                }
+                std::cout << KGRN << "Log file cleared" << RST << std::endl;
+                std::cout << KRED << "You will be redirected to the main menu" << RST << std::endl;
+                sleep(3);
+                DisplayMenu();
+                break;
+            case 'n':
+                std::cout << KRED << "You will be redirected to the main menu" << RST << std::endl;
+                sleep(3);
+                DisplayMenu();
+                break;
+            default:
+                std::cout << KRED << "Invalid choice" << RST << std::endl;
+                std::cout << KRED << "You will be redirected to the main menu" << RST << std::endl;
+                sleep(3);
+                DisplayMenu();
+        }
+    }
+    //TODO : ADD YML COMMUNICATION
 };
+//RICE CLASS
 #endif //RICEIFY_RICE_H
