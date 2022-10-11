@@ -3,6 +3,7 @@ COMPILER = g++
 SOURCE = main.cpp
 TARGET = Riceify
 FLAGS = -Wall -Wextra -I $(HEADERS)
+EXTRA = -I/usr/local/include -L/usr/local/lib -lyaml-cpp
 $(TARGET): $(SOURCE)
 compile:
 	$(COMPILER) -o $(TARGET) $(SOURCE) -I $(HEADERS) $(FLAGS)

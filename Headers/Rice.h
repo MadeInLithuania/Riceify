@@ -16,6 +16,7 @@
 #include <chrono>
 #include <fstream>
 #include "Colors.h"
+
 class Rice{
 private:
     unsigned long memSize;
@@ -23,19 +24,23 @@ private:
     std::list<std::string> riceNames;
     const time_t *creationDate;
     std::vector<Rice> rices;
+    std::string description;
     std::string logFile = "logs.log";
     std::vector<std::filesystem::path> files;
     int choice{};
 protected:
     std::string homedir = getenv("HOME");
-    std::string dbDir = homedir + "/Riceify/data.yaml";
-    std::string dirFile = homedir + "/Riceify/" + logFile;
+    std::string softwareName = "Riceify";
+    std::string ymlFileName = "data.yaml";
+    std::string dbDir = homedir + "/" + softwareName + "/" + ymlFileName;
+    std::string dirFile = homedir + "/" + softwareName + "/" + logFile;
     std::string createCmd = "touch " + dirFile;
-    std::string createDB = "mkdir ~/Riceify && cd ~/Riceify/ && touch data.yaml";
+    std::string createDB = "mkdir ~/" + softwareName + "&& cd ~/" + softwareName + "/ && touch data.yaml";
 public:
-    Rice(unsigned long _memSize, const std::string& _riceName, std::vector<Rice> _files, const time_t *_creationDate) {
+    Rice(unsigned long _memSize, const std::string& _riceName, std::string _desc, std::vector<Rice> _files, const time_t *_creationDate) {
         memSize = _memSize;
         riceName = _riceName;
+        description = _desc;
         _files.push_back(*this);
         creationDate = _creationDate;
     }
@@ -50,10 +55,12 @@ public:
     time_t GetCreationDate(){
         return *creationDate;
     }
+    std::string GetDescription(){
+        return description;
+    }
     std::string GetDatabaseFile(){
         return dbDir;
     }
-
     void CheckForDatabase(){
         if(!std::filesystem::exists(dbDir)) {
             try{
@@ -108,6 +115,8 @@ public:
         try {
             std::cout << "Please input the rice name :" << std::endl;
             std::cin >> riceName;
+            std::cout << "Please input the rice description :" << std::endl;
+            std::cin >> description;
             std::cout << "Rice name : " << riceName << std::endl;
             memSize = std::filesystem::space("/").available;
         }
@@ -130,6 +139,7 @@ public:
             WriteToLog("[" + GetCurrentTime() + "] Failed to create folder : " + e.what());
             throw std::exception(e);
         }
+        //EmitYML();
     }
     //NUMBER 3
     void RemoveRice(){
@@ -211,7 +221,7 @@ public:
             }
         }
         else std::cout << "[" << KGRN << "*" << RST << "] Folder exists ;) "<< std::endl;
-        auto r = new Rice(memSize, riceName, rices, creationDate);
+        auto r = new Rice(memSize, riceName, description, rices, creationDate);
         rices.push_back(*r);
         CopyFiles(riceName);
     }
@@ -219,7 +229,7 @@ public:
         std::string fontDir = "/usr/share/fonts/";
         std::cout << "Copying files..." << std::endl;
         //USING COMMANDS
-        std::string cmd = "cp -r ~/.config ~/Riceify/rices/" + _riceName; //GOING EAT, CREATES FOLDERS SEPARATELY
+        std::string cmd = "cp -r ~/.config ~/" + riceName + "/rices/" + _riceName; //GOING EAT, CREATES FOLDERS SEPARATELY
         std::string fonts = "cd ~ && sudo -S mkdir ~/Riceify/rices/" + riceName + "/usr/ && cd ~/Riceify/rices/" + riceName + "/usr/" +
                             " && sudo -S mkdir ~/Riceify/rices/" + riceName + "/share/ && cd ~/Riceify/rices/" + riceName + "/share/"+
                             //"&& sudo -S mkdir ~/Riceify/Rices/" + riceName + "/fonts/ " +
@@ -287,6 +297,7 @@ public:
                 DisplayMenu();
         }
     }
+    //TODO : ADD YML COMMUNICATION
 };
 //RICE CLASS
 #endif //RICEIFY_RICE_H

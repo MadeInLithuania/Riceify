@@ -11,7 +11,7 @@
 class Navigation{
 private:
     int choice{};
-    Rice *rice = new Rice(0,"",{},nullptr);
+    Rice *rice = new Rice(0,"","",{},nullptr);
     //Data *data = new Data();
 public:
     void GetHomeDir(){
