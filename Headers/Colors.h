@@ -14,4 +14,24 @@
 #define KMAG  "\x1B[35m"
 #define KCYN  "\x1B[36m"
 #define KWHT  "\x1B[37m"
+
+#include <iostream>
+#include <random>
+
+class Colors{
+public:
+    Colors() = default;
+    ~Colors() = default;
+    static std::string RandomColor(){
+        std::string colors[8] = {KRED, KGRN, KYEL, KBLU, KMAG, KCYN, KWHT};
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dis(0, 6);
+        return colors[dis(gen)];
+    }
+    static std::string ResetColor(){
+        return RST;
+    }
+};
+
 #endif //RICEIFY_COLORS_H
