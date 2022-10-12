@@ -7,11 +7,20 @@
 
 #include "Rice.h"
 
-class Logs: public Rice{
+class Logs{
+private:
+    std::string homedir = getenv("HOME");
     std::string logFile = "logs.log";
     std::string dirFile = homedir + "/Riceify/" + logFile;
     std::string createCmd = "touch " + dirFile;
+public:
+    std::string GetDirLogFile(){
+        return dirFile;
+    }
 
+    std::string GetCmdLog(){
+        return createCmd;
+    }
     void CreateLogFile(){
         try{
             system(createCmd.c_str());

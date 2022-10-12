@@ -8,14 +8,18 @@
 #include <iostream>
 #include "Rice.h"
 #include "logs.h"
+#include "Banner.h"
 
 class Navigation{
 private:
     int choice{};
     Rice *rice = new Rice(0,"",{},0);
+    Banner *banner = new Banner();
     Logs logs = *new Logs();
+
 public:
     void GetHomeDir(){
+        ClearTerminal();
         if(!std::filesystem::exists(logs.GetDirLogFile()))
         {
             system(logs.GetCmdLog().c_str());
@@ -26,6 +30,8 @@ public:
         std::cout << "----------------------------------------------------" << std::endl;
     }
     void DisplayMenu(){
+        banner->GetRandomBanner();
+        SetAuthorBanner();
         std::cout << "1. List all the rices" << std::endl;
         std::cout << "2. Add a rice" << std::endl;
         std::cout << "3. Remove a rice" << std::endl;
@@ -60,6 +66,14 @@ public:
                 std::cout << "Invalid choice" << std::endl;
                 break;
         }
+    }
+    static void ClearTerminal(){
+        system("clear");
+    }
+    static void SetAuthorBanner(){
+        std::cout << "----------------------------------------------------" << std::endl;
+        std::cout << KYEL << "Riceify" << RST << " made by " << KGRN << "ZukiLTU <3" << RST << std::endl;
+        std::cout << "----------------------------------------------------" << std::endl;
     }
 };
 #endif //RICEIFY_NAVIGATION_H
