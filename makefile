@@ -2,10 +2,11 @@ HEADERS = Headers/
 COMPILER = g++
 SOURCE = main.cpp
 TARGET = Riceify
+EXTRA = -lyaml-cpp
 FLAGS = -Wall -Wextra -I $(HEADERS)
 $(TARGET): $(SOURCE)
 compile:
-	$(COMPILER) -o $(TARGET) $(SOURCE) -I $(HEADERS) $(FLAGS)
+	$(COMPILER) -o $(TARGET) $(SOURCE) -I $(HEADERS) $(FLAGS) $(EXTRA)
 install: $(TARGET)
 	sudo mkdir /usr/bin/$(TARGET)
 	cp $(TARGET) /usr/bin/$(TARGET)
