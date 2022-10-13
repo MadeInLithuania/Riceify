@@ -1,5 +1,9 @@
 # Riceify (IN PROGRESS !)
 
+![](https://img.shields.io/github/issues/ZukiLTU/Riceify?style=for-the-badge)
+![](https://img.shields.io/github/forks/ZukiLTU/Riceify?style=for-the-badge)
+![](https://img.shields.io/github/stars/ZukiLTU/Riceify?style=for-the-badge)
+
 <strong>Allows you to switch beteween different rice configurations on Linux / any Unix distro.</strong>
 
 **Features**
