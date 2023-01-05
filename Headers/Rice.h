@@ -7,6 +7,7 @@
 
 #include <cstdlib>
 #include <list>
+#include <ostream>
 #include <string>
 #include <iostream>
 #include <filesystem>
@@ -16,6 +17,7 @@
 #include <vector>
 #include <chrono>
 #include <dirent.h>
+#include "Banner.h"
 #include "Colors.h"
 
 class Rice{
@@ -27,6 +29,7 @@ private:
     const time_t *creationDate;
     std::vector<Rice> rices;
     std::vector<std::filesystem::path> files;
+    std::vector<std::string> dirs;
     int choice;
 protected:
     std::string homedir = getenv("HOME");
@@ -53,22 +56,44 @@ public:
     }
     //PRELIST
     void GetRiceList(){
-        std::vector<std::string> dirs;
         for (auto &p : std::filesystem::directory_iterator(riceDir)) {
             if(p.is_directory()){
                 dirs.push_back(p.path().string());
             }
         }
         std::cout << "Rices : [" << dirs.size() << "]" << std::endl;
-        for (int i = 0; i < dirs.size(); i++) {
-            std::cout << "[" << i+1 << "] - " << dirs[i] << std::endl;
+        if(dirs.size() == 0){
+            std::cout << "The list is empty." << std::endl;
         }
+        else{
+            for (int i = 0; i < dirs.size(); i++) {
+                std::cout << "[" << i+1 << "] - " << dirs[i] << std::endl;
+            }
+        }
+    }
+    int GetRiceListWithLen(){
+        for (auto &p : std::filesystem::directory_iterator(riceDir)) {
+            if(p.is_directory()){
+                dirs.push_back(p.path().string());
+            }
+        }
+        std::cout << "Rices : [" << dirs.size() << "]" << std::endl;
+        if(dirs.size() == 0){
+            std::cout << "The list is empty." << std::endl;
+        }
+        else{
+            for (int i = 0; i < dirs.size(); i++) {
+                std::cout << "[" << i+1 << "] - " << dirs[i] << std::endl;
+            }
+        }
+        return dirs.size();
     }
     //NUMBER 1
     void ListRice() {
         GetRiceList();
         std::cout << KRED << "You will be redirected soon." << RST << std::endl;
         sleep(3);
+        dirs.clear();
         DisplayMenu();
     }
 
@@ -146,11 +171,11 @@ public:
             case 3:
                 RemoveRice();
                 break;
-            case 4:
+            case 4://edit rice
                 std::cout << "SOON" << std::endl;
                 break;
             case 5:
-                std::cout << "Not yet !" << std::endl;
+                SwitchRice();
                 break;
             case 6:
                 exit(1);
@@ -203,6 +228,38 @@ public:
             std::cout << "Error : " << KRED << &e << std::endl;
         }
         std::cout << "[" KGRN << "+" << RST << "]" << onSuccess << std::endl;
+    }
+    //change de config
+    void SwitchRice(){
+        int index;
+        int len = GetRiceListWithLen();
+        if(len == 1){
+            std::cout << "Can't switch with one rice." << std::endl;
+            sleep(2);
+            DisplayMenu();
+        }
+        else
+        {
+        std::cout << "Please select the rice to switch : " << std::endl;
+        std::cin >> index;
+        std::string chosenRice = dirs[index];
+        sleep(1);
+        std::cout << "Chosen the rice : " << dirs[index - 1] << std::endl;
+            if(!std::filesystem::exists(dirs[index - 1])){
+                std::cout << "Directory doesn't exist. Operation halted." << std::endl;
+                sleep(2);
+                DisplayMenu();
+            }
+            else{
+                std::cout << KRED << "This step requires sudo authentification." << RST << std::endl; 
+                std::string finalCMD = "sudo cp " + dirs[index - 1] + "/ ~";
+                bool a = system("sudo neofetch");
+                if(a)
+                    std::cerr << "[" << KRED << "!" << RST << "]" << "Error occured." << std::endl;
+                else
+                    std::cout << "Please reboot your device to finalize the changes." << std::endl;
+            }
+        }
     }
 };
 #endif //RICEIFY_RICE_H
