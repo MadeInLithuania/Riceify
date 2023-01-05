@@ -15,6 +15,7 @@
 #include <sys/statvfs.h>
 #include <vector>
 #include <chrono>
+#include <dirent.h>
 #include "Colors.h"
 
 class Rice{
@@ -30,6 +31,7 @@ private:
 protected:
     std::string homedir = getenv("HOME");
     std::string dbDir = homedir + "/Riceify/db.rcf";
+    std::string riceDir = homedir + "/Riceify/rices/";
 public:
     Rice(unsigned long _memSize, const std::string& _riceName, std::vector<Rice> _files, const time_t *_creationDate) {
         memSize = _memSize;
@@ -51,18 +53,15 @@ public:
     }
     //PRELIST
     void GetRiceList(){
-        std::cout << "Rices : [" << rices.size() << "]" << std::endl;
-        if(!rices.empty()){
-            for (int i = 0; i < rices.size(); ++i) {
-                std::cout << "[" << i + 1 << "]" << "\nDisk size : " <<
-                          rices.at(i).memSize << "\nRice name :" <<
-                          rices.at(i).riceName << "\nCreation date :" <<
-                          ctime(rices.at(i).creationDate) <<
-                          "=================" << std::endl;
+        std::vector<std::string> dirs;
+        for (auto &p : std::filesystem::directory_iterator(riceDir)) {
+            if(p.is_directory()){
+                dirs.push_back(p.path().string());
             }
         }
-        else{
-            std::cout << "No rices found" << std::endl;
+        std::cout << "Rices : [" << dirs.size() << "]" << std::endl;
+        for (int i = 0; i < dirs.size(); i++) {
+            std::cout << "[" << i+1 << "] - " << dirs[i] << std::endl;
         }
     }
     //NUMBER 1
@@ -144,7 +143,6 @@ public:
             case 2:
                 addRice();
                 break;
-
             case 3:
                 RemoveRice();
                 break;
@@ -192,31 +190,19 @@ public:
     void CopyFiles(const std::string& riceName){
         std::string fontDir = "/usr/share/fonts";
         std::cout << "Copying files..." << std::endl;
-        CopyConfigFolder();
-        CopyHomeFiles();
+        CopyFolder("cp -r ~/.config ~/Riceify/rices/" + riceName + "/.config/","Copying config files ...", "Copied config files successfully.");
+        CopyFolder("rsync -a ~/.??* ~/Riceify/rices/" + riceName + "/", "Copying home files ...", "Copied home files");
         DisplayMenu();
     }
-    void CopyConfigFolder(){
-        std::string cmd = "cp -r ~/.config ~/Riceify/rices/"
-                          + riceName + "/.config/";//+"&& sudo cp -r" + fontDir + " ~/Riceify/rices/" + riceName;
+    void CopyFolder(const std::string& cmd, const std::string& onCopyStr, const std::string & onSuccess){
         try{
+            std::cout << onCopyStr << std::endl;
             system(cmd.c_str());
         }
         catch(std::exception &e){
             std::cout << "Error : " << KRED << &e << std::endl;
         }
-        std::cout << "[" << KGRN << "+" << RST << "] Copied config file successfully." << std::endl;
-    }
-    void CopyHomeFiles(){
-      std::string cmd = "rsync -v ~/.??* ~/Riceify/rices/"
-                          + riceName + "/";
-        try{
-            system(cmd.c_str());
-        }
-        catch(std::exception &e){
-            std::cout << "Error : " << KRED << &e << std::endl;
-        }
-        std::cout << "[" << KGRN << "+" << RST << "]" << "Copied home files" << std::endl;  
+        std::cout << "[" KGRN << "+" << RST << "]" << onSuccess << std::endl;
     }
 };
 #endif //RICEIFY_RICE_H
