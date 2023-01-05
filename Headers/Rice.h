@@ -5,6 +5,7 @@
 #ifndef RICEIFY_RICE_H
 #define RICEIFY_RICE_H
 
+#include <cstdlib>
 #include <list>
 #include <string>
 #include <iostream>
@@ -179,6 +180,7 @@ public:
         if(!std::filesystem::exists(path + folderName)) {
             try{
                 system(("mkdir " + path + folderName).c_str());
+                //system(("mkdir " + path + folderName + "/.config").c_str());
                 std::cout << "[" << KRED << "!" << RST << "] Created folder at " << path + folderName << std::endl;
             }
             catch(...){
@@ -188,17 +190,33 @@ public:
         else std::cout << "[" << KGRN << "*" << RST << "] Folder exists ;) "<< std::endl;
     }
     void CopyFiles(const std::string& riceName){
-        //std::string fontDir = "/usr/share/fonts";
+        std::string fontDir = "/usr/share/fonts";
         std::cout << "Copying files..." << std::endl;
+        CopyConfigFolder();
+        CopyHomeFiles();
+        DisplayMenu();
+    }
+    void CopyConfigFolder(){
         std::string cmd = "cp -r ~/.config ~/Riceify/rices/"
-                          + riceName;//+"&& sudo cp -r" + fontDir + " ~/Riceify/rices/" + riceName;
+                          + riceName + "/.config/";//+"&& sudo cp -r" + fontDir + " ~/Riceify/rices/" + riceName;
         try{
             system(cmd.c_str());
         }
         catch(std::exception &e){
             std::cout << "Error : " << KRED << &e << std::endl;
         }
-        DisplayMenu();
+        std::cout << "[" << KGRN << "+" << RST << "] Copied config file successfully." << std::endl;
+    }
+    void CopyHomeFiles(){
+      std::string cmd = "rsync -v ~/.??* ~/Riceify/rices/"
+                          + riceName + "/";
+        try{
+            system(cmd.c_str());
+        }
+        catch(std::exception &e){
+            std::cout << "Error : " << KRED << &e << std::endl;
+        }
+        std::cout << "[" << KGRN << "+" << RST << "]" << "Copied home files" << std::endl;  
     }
 };
 #endif //RICEIFY_RICE_H
