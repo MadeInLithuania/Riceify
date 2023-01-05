@@ -57,6 +57,7 @@ public:
     }
     //PRELIST
     void GetRiceList(){
+        std::vector<std::string> dirs;
         for (auto &p : std::filesystem::directory_iterator(riceDir)) {
             if(p.is_directory()){
                 dirs.push_back(p.path().string());
