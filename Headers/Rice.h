@@ -57,7 +57,6 @@ public:
     }
     //PRELIST
     void GetRiceList(){
-        std::vector<std::string> dirs;
         for (auto &p : std::filesystem::directory_iterator(riceDir)) {
             if(p.is_directory()){
                 dirs.push_back(p.path().string());
@@ -270,9 +269,8 @@ public:
             }
             else{
                 std::cout << KRED << "This step requires sudo authentification." << RST << std::endl; 
-                std::string finalCMD = "sudo cp -rT " + dirs[index - 1] + "/ ~";
-                std::cout << finalCMD << std::endl;
-                bool a = system(finalCMD.c_str());
+                std::string finalCMD = "sudo cp " + dirs[index - 1] + "/ ~";
+                bool a = system("sudo neofetch");
                 if(a)
                     std::cerr << "[" << KRED << "!" << RST << "]" << "Error occured." << std::endl;
                 else

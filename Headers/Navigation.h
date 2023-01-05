@@ -70,7 +70,7 @@ public:
                 std::cout << "SOON" << std::endl;
                 break;
             case 5:
-                std::cout << "Not yet !" << std::endl;
+                rice->SwitchRice();
                 break;
             case 6:
                 rice->ClearLog();
