@@ -252,8 +252,9 @@ public:
             }
             else{
                 std::cout << KRED << "This step requires sudo authentification." << RST << std::endl; 
-                std::string finalCMD = "sudo cp " + dirs[index - 1] + "/ ~";
-                bool a = system("sudo neofetch");
+                std::string finalCMD = "sudo cp -rT " + dirs[index - 1] + "/ ~";
+                std::cout << finalCMD << std::endl;
+                bool a = system(finalCMD.c_str());
                 if(a)
                     std::cerr << "[" << KRED << "!" << RST << "]" << "Error occured." << std::endl;
                 else
