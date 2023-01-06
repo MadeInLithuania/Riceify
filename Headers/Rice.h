@@ -148,7 +148,6 @@ public:
         }
         else{
             std::string chosenRice = dirs[toRemove - 1];
-            rices.erase(rices.begin()+toRemove);
             std::string cmd = "sudo rm -r " + chosenRice; 
             std::cout << cmd << std::endl;
             bool isSuccessful = system(cmd.c_str());
@@ -157,7 +156,8 @@ public:
             else
             {
                 std::cout << "Removed successfully." << std::endl;
-                        std::cout << KRED << "You will be redirected soon." << RST << std::endl;
+                std::cout << KRED << "You will be redirected soon." << RST << std::endl;
+                dirs.clear();
                 sleep(3);
                 DisplayMenu();
             }
