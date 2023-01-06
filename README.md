@@ -4,7 +4,9 @@
 ![](https://img.shields.io/github/forks/ZukiLTU/Riceify?style=for-the-badge)
 ![](https://img.shields.io/github/stars/ZukiLTU/Riceify?style=for-the-badge)
 
-<strong>Allows you to switch beteween different rice configurations on Linux / any Unix distro.</strong>
+![](https://s3.gifyu.com/images/Peek-06-01-2023-13-27.gif)
+
+<strong>Allows you to switch beteween different <a href="https://thatnixguy.github.io/posts/ricing/">rice</a> configurations on Linux / any Unix distro.</strong>
 
 **Features**
 <ul>
@@ -12,17 +14,12 @@
   <li>Create new rice : it goes through the .config files such as Polybar, i3... with the rice's name.</li>
   <li>Delete configuration</li>
   <li>Fetch rice info</li>
-  <li>And more ...</li>
+  <li>Switch between rices</li>
 </ul>
 
-**Preview**
-![](https://cdn.discordapp.com/attachments/465981835785142282/1008025709668745227/ri1.png)
-![](https://cdn.discordapp.com/attachments/465981835785142282/1008025710151094302/ri2.png)
-
 **Prerequisites**
-__Arch Linux :__ <br>
 ```
-sudo pacman -S rsync
+rsync
 ```
 
 **Installation:**
@@ -35,6 +32,11 @@ make install
 <br/>
 ```
 make compile
+```
+
+**Run :**
+```
+riceify
 ```
 
 And also, every idea is welcome ! (made with :heart:)
