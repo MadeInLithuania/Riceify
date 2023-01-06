@@ -22,20 +22,8 @@ public:
         ClearTerminal();
         if(!std::filesystem::exists(logs.GetDirLogFile()))
         {
-            try{
-                system(rice->GetCmdLog().c_str());
-                rice->WriteToLog("[" + Rice::GetCurrentTime() + "]" + "Created log file at " + rice->GetDirLogFile() + "\n");
-                std::cout << "[" << KRED << "!" << RST << "] Created log file at " << rice->GetDirLogFile() << std::endl;
-
-            }
-            catch(std::exception &e){
-                std::cout << "[" << KRED << "!" << RST << "] Failed to create log file at " << rice->GetDirLogFile() << ": " << e.what() << std::endl;
-                rice->WriteToLog("[" + Rice::GetCurrentTime() + "]" + "Failed to create log file at " + rice->GetDirLogFile() + ": " + e.what() + "\n");
-                throw std::exception();
-            }
+            system(logs.GetCmdLog().c_str());
         }
-        std::cout << "[" << KGRN << "*" << RST << "] Log file already exists at " << rice->GetDirLogFile() << std::endl;
-        rice->WriteToLog("[" + Rice::GetCurrentTime() + "] Log file already exists at " + rice->GetDirLogFile() + "\n");
         std::string homedir = getenv("HOME");
         std::cout << "Home directory is " << KMAG << homedir << RST << std::endl;
         std::cout << "The PID of the process is " << KMAG << getpid() << RST << std::endl;
@@ -49,8 +37,7 @@ public:
         std::cout << "3. Remove a rice" << std::endl;
         std::cout << "4. Edit a rice" << std::endl;
         std::cout << "5. Switch rices" << std::endl;
-        std::cout << "6. Clear log file" << std::endl;
-        std::cout << "7. Exit" << std::endl;
+        std::cout << "6. Exit" << std::endl;
         GetChoice();
     }
     void GetChoice(){
@@ -63,6 +50,7 @@ public:
             case 2:
                 rice->addRice();
                 break;
+
             case 3:
                 rice->RemoveRice();
                 break;
@@ -73,9 +61,6 @@ public:
                 rice->SwitchRice();
                 break;
             case 6:
-                rice->ClearLog();
-                break;
-            case 7:
                 exit(1);
             default:
                 std::cout << "Invalid choice" << std::endl;

@@ -12,7 +12,6 @@
 #include <iostream>
 #include <filesystem>
 #include <ctime>
-#include <type_traits>
 #include <unistd.h>
 #include <sys/statvfs.h>
 #include <vector>
@@ -138,30 +137,14 @@ public:
     //NUMBER 3
     void RemoveRice(){
         int toRemove;
-        dirs.clear();
         GetRiceList();
         std::cout << "Please input a rice to delete :" << std::endl;
         std::cin >> toRemove;
-        if(toRemove > dirs.size() || toRemove < 1){
-            std::cout << "The selection is out of range." << std::endl;
+        if(!std::cin.fail()){
+            std::cerr << "Not a valid choice !" << std::endl;
             RemoveRice();
         }
-        else{
-            std::string chosenRice = dirs[toRemove - 1];
-            std::string cmd = "sudo rm -r " + chosenRice; 
-            std::cout << cmd << std::endl;
-            bool isSuccessful = system(cmd.c_str());
-            if(isSuccessful)
-                std::cerr << "[" << KRED << "!" << RST << "]" << "Error occured." << std::endl;
-            else
-            {
-                std::cout << "Removed successfully." << std::endl;
-                std::cout << KRED << "You will be redirected soon." << RST << std::endl;
-                dirs.clear();
-                sleep(3);
-                DisplayMenu();
-            }
-        }
+        else rices.erase(rices.begin()+toRemove);
     }
 
     //----
