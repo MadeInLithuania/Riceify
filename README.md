@@ -1,4 +1,4 @@
-# Riceify (IN PROGRESS !)
+# Riceify
 
 ![https://github.com/ZukiLTU/Riceify/issues](https://img.shields.io/github/issues/ZukiLTU/Riceify?style=for-the-badge)
 ![](https://img.shields.io/github/forks/ZukiLTU/Riceify?style=for-the-badge)
