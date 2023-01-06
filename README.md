@@ -22,7 +22,7 @@
 **Prerequisites**
 __Arch Linux :__ <br>
 ```
-sudo pacman -S yaml-cpp
+sudo pacman -S rsync
 ```
 
 **Installation:**
