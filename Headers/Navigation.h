@@ -55,7 +55,7 @@ public:
                 rice->RemoveRice();
                 break;
             case 4:
-                std::cout << "SOON" << std::endl;
+                rice->EditRice();
                 break;
             case 5:
                 rice->SwitchRice();

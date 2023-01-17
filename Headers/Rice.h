@@ -172,7 +172,7 @@ public:
                 RemoveRice();
                 break;
             case 4://edit rice
-                std::cout << "SOON" << std::endl;
+                EditRice();
                 break;
             case 5:
                 SwitchRice();
@@ -260,6 +260,31 @@ public:
                 else
                     std::cout << "Please reboot your device to finalize the changes." << std::endl;
             }
+        }
+    }
+    void EditRice(){
+        int choice;
+        GetRiceList();
+        std::cout << "Please choose the rice to edit :" << std::endl;
+        std::cin >> choice;
+        if(choice > dirs.size() && choice < 1){
+            std::cerr << "Index is out of range." << std::endl;
+            EditRice();
+        }
+        else{
+            std::cout << "Starting copying from " << KMAG << homedir << RST << " to " << KMAG << dirs[choice-1] << RST << std::endl;
+            std::string cmd = "sudo cp -rT ~ " + dirs[choice-1];
+            std::cout << KRED << "This step requires sudo authentification." << RST << std::endl; 
+            bool isSuccess = system(cmd.c_str());
+            if(isSuccess)
+                std::cerr << "Error while copying." << std::endl;
+            else{
+                std::cout << "[" << KGRN << "*" << RST << "] Task completed successfully." << std::endl;
+            }
+            std::cout << KRED << "\nYou will be redirected soon." << RST << std::endl;
+            sleep(3);
+            dirs.clear();
+            DisplayMenu();
         }
     }
 };
