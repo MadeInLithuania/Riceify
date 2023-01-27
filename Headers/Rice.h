@@ -19,6 +19,7 @@
 #include <dirent.h>
 #include "Banner.h"
 #include "Colors.h"
+#include <dirent.h>
 
 class Rice{
 #pragma err
@@ -115,14 +116,12 @@ public:
             std::cout << "Please input the rice name :" << std::endl;
             std::cin >> riceName;
             std::cout << "Rice name : " << riceName << std::endl;
-            memSize = std::filesystem::space("/").available;
             Rice *r = new Rice(memSize, riceName, rices, creationDate);
         }
         catch(std::exception &exception){
             throw std::exception(exception);
         }
         std::cout << "Success ! \n" <<
-                  "Disk size : " << KGRN << memSize << RST <<
                   "\nRice name : " << KGRN << riceName << RST <<
                   "\nCreation date : " << KGRN << std::ctime(creationDate) << RST << std::endl;
         std::cout << KRED << "You will be redirected soon." << RST << std::endl;
