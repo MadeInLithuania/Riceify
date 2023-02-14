@@ -7,7 +7,7 @@ $(TARGET): $(SOURCE)
 compile:
 	$(COMPILER) -o $(TARGET) $(SOURCE) -I $(HEADERS) $(FLAGS)
 install: $(TARGET)
-	cp $(TARGET) /usr/bin/$(TARGET)
+	sudo cp $(TARGET) /usr/bin/$(TARGET)
 run: $(TARGET)
 	./$(TARGET)
 debug: $(TARGET)
