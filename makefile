@@ -1,7 +1,7 @@
 HEADERS = Headers/
 COMPILER = g++
 SOURCE = main.cpp
-TARGET = riceify
+TARGET = Riceify
 FLAGS = -Wall -Wextra -I $(HEADERS)
 $(TARGET): $(SOURCE)
 compile:
