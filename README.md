@@ -1,11 +1,11 @@
-# Riceify
+# Riceify (console)
 
 ![https://github.com/ZukiLTU/Riceify/issues](https://img.shields.io/github/issues/ZukiLTU/Riceify?style=for-the-badge)
 ![](https://img.shields.io/github/forks/ZukiLTU/Riceify?style=for-the-badge)
 ![](https://img.shields.io/github/stars/ZukiLTU/Riceify?style=for-the-badge)
 
 <img src="https://s3.gifyu.com/images/Peek-06-01-2023-13-27.gif" alt="" style="height:60vh">
-
+**COMING SOON : GUI and command version**
 <strong>Allows you to switch beteween different <a href="https://thatnixguy.github.io/posts/ricing/">rice</a> configurations on Linux / any Unix distro.</strong>
 
 **Features**
