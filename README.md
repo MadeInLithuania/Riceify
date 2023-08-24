@@ -1,5 +1,7 @@
 # Riceify (console)
 
+**Warning : the development is halted for a moment, if you have bug reports please report it.**
+
 ![https://github.com/ZukiLTU/Riceify/issues](https://img.shields.io/github/issues/ZukiLTU/Riceify?style=for-the-badge)
 ![](https://img.shields.io/github/forks/ZukiLTU/Riceify?style=for-the-badge)
 ![](https://img.shields.io/github/stars/ZukiLTU/Riceify?style=for-the-badge)
