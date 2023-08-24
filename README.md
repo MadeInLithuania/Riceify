@@ -8,7 +8,7 @@
 
 <img src="https://s3.gifyu.com/images/Peek-06-01-2023-13-27.gif" alt="" style="height:60vh">
 <strong>COMING SOON : GUI and command version</strong><br/>
-<strong>Allows you to switch beteween different <a href="https://thatnixguy.github.io/posts/ricing/">rice</a> configurations on Linux / any Unix distro.</strong>
+<strong>Allows you to switch beteween different <a href="[https://thatnixguy.github.io/posts/ricing/](https://www.reddit.com/r/unixporn/wiki/themeing/dictionary/#wiki_rice)">rice</a> configurations on Linux / any Unix distro.</strong>
 
 **Features**
 <ul>
