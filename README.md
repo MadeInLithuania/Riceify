@@ -30,6 +30,15 @@ rsync
 git clone https://github.com/ZukiLTU/Riceify && cd Riceify/
 make install
 ```
+| **Excluded directories** |
+|:------------------------:|
+| ~/Downloads/             |
+| ~/Pictures/              |
+| ~/Documents/             |
+| ~/Music/                 |
+| ~/Videos/                |
+| ~/Desktop/               |
+
 **Compiling:**
 <br/>
 ```
