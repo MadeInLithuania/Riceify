@@ -13,7 +13,7 @@
 #include <filesystem>
 #include <ctime>
 #include <unistd.h>
-#include <sys/statvfs.h>
+#include <sys/statvfs.h>0
 #include <vector>
 #include <chrono>
 #include <dirent.h>
@@ -43,9 +43,8 @@ public:
         _files.push_back(*this);
         creationDate = _creationDate;
     }
-
-    void CheckForDatabase(){
-        /*if(!std::filesystem::exists(dbDir)) {
+    /*void CheckForDatabase(){
+        if(!std::filesystem::exists(dbDir)) {
             try{
                 system("mkdir ~/Riceify && cd ~/Riceify/ && touch db.rcf");
                 std::cout << "[" << KRED << "!" << RST << "] Created database at " << dbDir << std::endl;
@@ -54,24 +53,30 @@ public:
                 throw std::exception();
             }
         }
-        else std::cout << "[" << KGRN << "*" << RST << "] Database exists ;) "<< std::endl;*/
-    }
+        else std::cout << "[" << KGRN << "*" << RST << "] Database exists ;) "<< std::endl;
+    }*/
     //PRELIST
     void GetRiceList(){
-        for (auto &p : std::filesystem::directory_iterator(riceDir)) {
+        if(std::filesystem::exists(homedir + "/Riceify/rices/"))
+        {
+            for (auto &p : std::filesystem::directory_iterator(riceDir)) {
             if(p.is_directory()){
                 dirs.push_back(p.path().string());
             }
-        }
-        std::cout << "Rices : [" << dirs.size() << "]" << std::endl;
-        if(dirs.size() == 0){
-            std::cout << "The list is empty." << std::endl;
-        }
-        else{
-            for (int i = 0; i < dirs.size(); i++) {
-                std::cout << "[" << i+1 << "] - " << dirs[i] << std::endl;
+            }
+            std::cout << "Rices : [" << dirs.size() << "]" << std::endl;
+            if(dirs.size() == 0){
+                std::cout << "The list is empty." << std::endl;
+            }
+            else{
+                for (int i = 0; i < dirs.size(); i++) {
+                    std::cout << "[" << i+1 << "] - " << dirs[i] << std::endl;
+                }
             }
         }
+        else{
+            std::cerr << "[" << KRED << "!" << RST << "] Directory" << homedir << "/Riceify/rices/ not found." << std::endl; 
+        }       
     }
     int GetRiceListWithLen(){
         for (auto &p : std::filesystem::directory_iterator(riceDir)) {
@@ -185,21 +190,16 @@ public:
     //FINDS ONLY FILES, NOT COPYING THEM
     void GetHomeFilesAndSubfolders() {
         files.clear();
+        std::string excludedFolderPath = homedir + "Riceify/rices/";
         std::filesystem::path home = homedir;
         std::cout << "[" << KCYN << "*" << RST << "] Getting files and subfolders from " << KMAG << home << std::endl;
         try{
-            for (auto &p : std::filesystem::recursive_directory_iterator(home)) {
-                //excludes the ~/Riceify directory and all the subdirectories from being detected
-                if(p.path().string().find("Riceify") != std::string::npos){
-
-                }
-                //excludes the trash:/// dir
-                if(p.path().string().find("trash") != std::string::npos){
-
-                }
-                else
-                    files.push_back(p);
-                //std::cout << p << std::endl;
+            if(!std::filesystem::exists(excludedFolderPath)){
+                excludedFolderPath = "";
+            }
+            for (auto &p : std::filesystem::recursive_directory_iterator(home)){
+                if(p.path() != excludedFolderPath)
+                files.push_back(p);
             }
         }catch(std::exception &ex){
             std::cout << KRED << &ex << std::endl; // WITHOUT IT THROWS what(): filesystem error: cannot increment recursive directory iterator: Permission denied
