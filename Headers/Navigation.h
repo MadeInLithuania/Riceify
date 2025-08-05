@@ -34,15 +34,20 @@ public:
     Navigation& operator=(Navigation&&) = default;
     
     void GetHomeDir(){
+        START_OPERATION("GetHomeDir");
+        LOG_INFO(LogCategory::SYSTEM, "Initializing Riceify application");
         ClearTerminal();
         if(!std::filesystem::exists(logs->GetDirLogFile()))
         {
+            LOG_DEBUG(LogCategory::SYSTEM, "Creating log directory");
             system(logs->GetCmdLog().c_str());
         }
         std::string homedir = getenv("HOME");
         std::cout << "Home directory is " << KMAG << homedir << RST << std::endl;
         std::cout << "The PID of the process is " << KMAG << getpid() << RST << std::endl;
         std::cout << "----------------------------------------------------" << std::endl;
+        LOG_INFO(LogCategory::SYSTEM, "Application initialized", "Home: " + homedir + " | PID: " + std::to_string(getpid()));
+        END_OPERATION("GetHomeDir");
     }
     
     void DisplayMenu(){
@@ -65,9 +70,10 @@ public:
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Invalid input. Please enter a number." << std::endl;
+            LOG_WARNING(LogCategory::USER_ACTIONS, "Invalid user input", "Expected number, got invalid input");
             return;
         }
-        
+        LOG_INFO(LogCategory::USER_ACTIONS, "User menu selection", "Choice: " + std::to_string(choice));
         switch (choice) {
             case 1:
                 rice->ListRice();
@@ -86,9 +92,11 @@ public:
                 break;
             case 6:
                 std::cout << "Goodbye!" << std::endl;
+                LOG_INFO(LogCategory::SYSTEM, "Application exit requested by user");
                 exit(0);
             default:
                 std::cout << "Invalid choice. Please select 1-6." << std::endl;
+                LOG_WARNING(LogCategory::USER_ACTIONS, "Invalid menu choice", "Choice: " + std::to_string(choice));
                 break;
         }
     }
