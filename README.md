@@ -43,28 +43,16 @@ make
 
 ### Quick Install
 ```bash
-git clone https://github.com/ZukiLTU/Riceify
-cd Riceify/
-chmod +x build.sh
-./build.sh
+curl -sSL https://raw.githubusercontent.com/MadeInLithuania/Riceify/main/install.sh | bash
 ```
 
-### Manual Build
+### Manual Build (source)
 ```bash
-# Clone the repository
-git clone https://github.com/ZukiLTU/Riceify
-cd Riceify/
-
-# Create build directory
+git clone https://github.com/MadeInLithuania/Riceify
+cd Riceify
 mkdir build && cd build
-
-# Configure with optimizations
-cmake -DCMAKE_BUILD_TYPE=Release ..
-
-# Build with all cores
+cmake ..
 make -j$(nproc)
-
-# Install (optional)
 sudo make install
 ```
 
