@@ -2,4 +2,6 @@ PKGBUILD
 Riceify
 .github/
 rices/
+build/
+.vscode/
 logs.log
