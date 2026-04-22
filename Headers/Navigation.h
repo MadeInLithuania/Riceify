@@ -48,7 +48,7 @@ public:
                 rice->ListRice();
                 break;
             case 2:
-                rice->addRice();
+                rice->AddRice();
                 break;
 
             case 3:
