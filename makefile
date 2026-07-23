@@ -1,21 +1,36 @@
+# ...existing code...
 HEADERS = Headers/
-COMPILER = g++
-SOURCE = main.cpp
+CXX = clang++
+SRCS = $(wildcard *.cpp)
 TARGET = Riceify
-FLAGS = -Wall -Wextra -I $(HEADERS)
-$(TARGET): $(SOURCE)
-compile:
-	$(COMPILER) -o $(TARGET) $(SOURCE) -I $(HEADERS) $(FLAGS)
+CXXFLAGS = -Wall -Wextra -I$(HEADERS) -std=gnu++20
+LDFLAGS =
+INSTALL_DIR = /usr/bin
+
+.PHONY: all compile install run debug clean uninstall repair
+
+all: $(TARGET)
+
+$(TARGET): $(SRCS)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+
+compile: $(TARGET)
+
 install: $(TARGET)
-	sudo cp $(TARGET) /usr/bin/$(TARGET)
+	sudo cp $(TARGET) $(INSTALL_DIR)/$(TARGET)
+
 run: $(TARGET)
 	./$(TARGET)
+
 debug: $(TARGET)
 	gdb $(TARGET)
+
 clean:
-	rm $(TARGET)
+	-rm -f $(TARGET)
+
 uninstall:
-	sudo rm /usr/bin/$(TARGET)
-repair:
-	make clean
-	make
+	sudo rm -f $(INSTALL_DIR)/$(TARGET)
+
+repair: 
+	@$(MAKE) clean
+	@$(MAKE)

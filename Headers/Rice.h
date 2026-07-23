@@ -47,8 +47,8 @@ public:
 
     //PRELIST
     int GetRiceList(){
-        /*if(std::filesystem::exists(homedir + "/Riceify/rices/"))
-        {*/
+        if(std::filesystem::exists(homedir + "/Riceify/rices/"))
+        {
             dirs.clear();
             for (auto &p : std::filesystem::directory_iterator(riceDir)) {
                 if(p.is_directory()){
@@ -64,11 +64,10 @@ public:
                     std::cout << "[" << i+1 << "] - " << dirs[i] << std::endl;
                 }
             }
-        /*}
-        else{
-            std::cerr << "[" << KRED << "!" << RST << "] Directory " << homedir << "/Riceify/rices/ not found." << std::endl; 
-        }*/
-        return dirs.size();      
+        } else {
+            std::filesystem::create_directories(riceDir);
+        }
+        return dirs.size();
     }
     int GetRiceListWithLen(){
         for (auto &p : std::filesystem::directory_iterator(riceDir)) {
@@ -98,38 +97,57 @@ public:
 
     //NUMBER 2
     void AddRice(){
-        try {
-        struct statvfs stat{};
-        if (statvfs("/", &stat) != 0) {
-            std::cerr << "Error (can't read the dir !)";
-            exit(-1);
-        }
+        try 
+        {
+            // personal / bulky folders to skip (configs & dotfiles are kept)
+            auto ignoredDirectoriesFromSource = std::vector<std::string>{
+                "Documents",
+                "Downloads",
+                "Pictures",
+                "Videos",
+                "Music",
+                "Desktop",
+                "Téléchargements",
+                "Images",
+                "Musique",
+                "Vidéos",
+                "Bureau",
+                ".cache",
+                ".local/share/Trash",
+                "Riceify",
+            };
+            struct statvfs stat{};
+            if (statvfs("/", &stat) != 0) {
+                std::cerr << "Error (can't read the dir !)";
+                exit(-1);
+            }
 
-        // the available size is f_bsize * f_bavail
-        auto end = std::chrono::system_clock::now();
-        std::time_t _time = std::chrono::system_clock::to_time_t(end);
-        creationDate = &_time;
-        char* ct = ctime(creationDate);
-        GetHomeFilesAndSubfolders();
+            // the available size is f_bsize * f_bavail
+            auto end = std::chrono::system_clock::now();
+            std::time_t _time = std::chrono::system_clock::to_time_t(end);
+            creationDate = &_time;
+            char* ct = ctime(creationDate);
+            GetHomeFilesAndSubfolders();
 
-        std::cout << "Please input the rice name :" << RST << std::endl;
-        std::cin >> riceName;
-        rtrim(riceName);
-        std::cout << "Rice name : " << riceName << std::endl;
-        std::cout << "Success ! \n" <<
-                  "\nRice name : " << KGRN << riceName << RST <<
-                  "\nCreation date : " << KGRN << ct << RST << std::endl;
-        std::cout << KRED << "You will be redirected soon." << RST << std::endl;
-        if(!std::filesystem::exists(homedir + "/Riceify/rices/")){
-            system("mkdir ~/Riceify/rices/");
-        }
-        CreateFolder(riceName, homedir + "/Riceify/rices/");
-        auto rice = new Rice(memSize, riceName, rices, creationDate);
-        rices.push_back(*rice);
-        CopyFiles(riceName);
-        }
-        catch(std::exception &exception){
-            throw std::exception(exception);
+            std::cout << "Please input the rice name :" << RST << std::endl;
+            std::cin >> riceName;
+            rtrim(riceName);
+            std::cout << "Rice name : " << riceName << std::endl;
+            std::cout << "Success ! \n" <<
+                    "\nRice name : " << KGRN << riceName << RST <<
+                    "\nCreation date : " << KGRN << ct << RST << std::endl;
+            std::cout << KRED << "You will be redirected soon." << RST << std::endl;
+            if(!std::filesystem::exists(homedir + "/Riceify/rices/")){
+                system("mkdir ~/Riceify/rices/");
+            }
+            //crée le dossier rice
+            CreateFolder(riceName, homedir + "/Riceify/rices/");
+            auto rice = new Rice(memSize, riceName, rices, creationDate);
+            rices.push_back(*rice);
+            CopyFiles(riceName, ignoredDirectoriesFromSource);
+            }
+            catch(std::exception &exception){
+                throw std::exception(exception);
         }
     }
     //NUMBER 3
@@ -239,7 +257,6 @@ public:
         if(!std::filesystem::exists(path + folderName)) {
             try{
                 system(("mkdir " + path + folderName).c_str());
-                //system(("mkdir " + path + folderName + "/.config").c_str());
                 std::cout << "[" << KRED << "!" << RST << "] Created folder at " << path + folderName << std::endl;
             }
             catch(...){
@@ -248,14 +265,28 @@ public:
         }
         else std::cout << "[" << KGRN << "*" << RST << "] Folder exists ;) "<< std::endl;
     }
-    void CopyFiles(const std::string& riceName){
+    void CopyFiles(const std::string& riceName, const std::vector<std::string>& ignoredDirectories) {
         try{
-            std::string fontDir = "/usr/share/fonts";
-            if(!CopyFolder("mkdir ~/Riceify/rices/" + riceName + "/.config", "Creating config folder ...", "Created config folder successfully.")) throw new std::exception;
-            std::cout<<"test2"<<std::endl;
-            //CopyFolder("cp -r ~/.config ~/Riceify/rices/" + riceName + "/.config/","Copying config files ...", "Copied config files successfully.");
-            if(!CopyFolder("rsync -a ~/.??* ~/Riceify/rices/" + riceName + "/", "Copying home files ...", "Copied home files")) throw new std::exception;
-            std::cout<<"test"<<std::endl;
+            std::string excludes;
+            for(const auto& dir : ignoredDirectories) {
+                std::string pattern = dir;
+                if(pattern.rfind("~/", 0) == 0) {
+                    pattern = pattern.substr(2);
+                }
+                std::cout << "Ignoring: ~/" << pattern << std::endl;
+                excludes.append(" --exclude='" + pattern + "'");
+            }
+            // copy home contents into the rice folder, skipping personal dirs
+            std::string dest = "~/Riceify/rices/" + riceName + "/";
+            std::string rsyncCommand = "rsync -a" + excludes + " ~/ " + dest;
+            std::cout << "[" << KCYN << "*" << RST << "] Copying home files ..." << std::endl;
+            std::cout << rsyncCommand << std::endl;
+            int status = system(rsyncCommand.c_str());
+            if(status != 0) {
+                std::cerr << "[" << KRED << "!" << RST << "] rsync failed (code " << status << ")." << std::endl;
+            } else {
+                std::cout << "[" << KGRN << "*" << RST << "] Copied home files successfully." << std::endl;
+            }
             DisplayMenu();
         }
         catch(std::exception &ex){
