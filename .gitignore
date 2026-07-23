@@ -1,3 +1,7 @@
 PKGBUILD
-riceify
+Riceify
 .github/
+rices/
+build/
+.vscode/
+logs.log
