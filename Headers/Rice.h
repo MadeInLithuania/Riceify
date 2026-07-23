@@ -10,6 +10,7 @@
 #include <ostream>
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <filesystem>
 #include <ctime>
 #include <unistd.h>
@@ -99,23 +100,11 @@ public:
     void AddRice(){
         try 
         {
-            // personal / bulky folders to skip (configs & dotfiles are kept)
-            auto ignoredDirectoriesFromSource = std::vector<std::string>{
-                "Documents",
-                "Downloads",
-                "Pictures",
-                "Videos",
-                "Music",
-                "Desktop",
-                "Téléchargements",
-                "Images",
-                "Musique",
-                "Vidéos",
-                "Bureau",
-                ".cache",
-                ".local/share/Trash",
-                "Riceify",
-            };
+            // skip XDG personal folders (locale-aware: Dokumentai, Atsiuntimai, …)
+            auto ignoredDirectoriesFromSource = GetPersonalDirectoriesToIgnore();
+            ignoredDirectoriesFromSource.push_back(".cache");
+            ignoredDirectoriesFromSource.push_back(".local/share/Trash");
+            ignoredDirectoriesFromSource.push_back("Riceify");
             struct statvfs stat{};
             if (statvfs("/", &stat) != 0) {
                 std::cerr << "Error (can't read the dir !)";
@@ -265,6 +254,36 @@ public:
         }
         else std::cout << "[" << KGRN << "*" << RST << "] Folder exists ;) "<< std::endl;
     }
+    // resolve locale-specific personal dirs from ~/.config/user-dirs.dirs
+    static std::vector<std::string> GetPersonalDirectoriesToIgnore() {
+        std::vector<std::string> ignored;
+        const char* homeEnv = getenv("HOME");
+        if(!homeEnv) return ignored;
+        std::string home = homeEnv;
+        std::ifstream file(home + "/.config/user-dirs.dirs");
+        if(!file.is_open()) {
+            // English fallbacks if XDG file is missing
+            return {"Documents", "Downloads", "Pictures", "Videos", "Music", "Desktop", "Templates", "Public"};
+        }
+        std::string line;
+        while(std::getline(file, line)) {
+            if(line.empty() || line[0] == '#') continue;
+            auto eq = line.find('=');
+            if(eq == std::string::npos) continue;
+            std::string value = line.substr(eq + 1);
+            // strip quotes: "$HOME/Dokumentai" or "/abs/path"
+            if(!value.empty() && value.front() == '"') value.erase(0, 1);
+            if(!value.empty() && value.back() == '"') value.pop_back();
+            const std::string homePrefix = "$HOME/";
+            if(value.rfind(homePrefix, 0) == 0) {
+                ignored.push_back(value.substr(homePrefix.size()));
+            } else if(value.rfind(home + "/", 0) == 0) {
+                ignored.push_back(value.substr(home.size() + 1));
+            }
+        }
+        return ignored;
+    }
+
     void CopyFiles(const std::string& riceName, const std::vector<std::string>& ignoredDirectories) {
         try{
             std::string excludes;
@@ -273,7 +292,11 @@ public:
                 if(pattern.rfind("~/", 0) == 0) {
                     pattern = pattern.substr(2);
                 }
-                std::cout << "Ignoring: ~/" << pattern << std::endl;
+                // leading slash = only match at transfer root (home)
+                if(!pattern.empty() && pattern.front() != '/') {
+                    pattern = "/" + pattern;
+                }
+                std::cout << "Ignoring: ~" << pattern << std::endl;
                 excludes.append(" --exclude='" + pattern + "'");
             }
             // copy home contents into the rice folder, skipping personal dirs
