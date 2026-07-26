@@ -222,22 +222,13 @@ public:
         try{
             if(!std::filesystem::exists(excludedFolderPath)){
                 excludedFolderPath = "";
-            }
-            for (auto &fd : std::filesystem::directory_iterator(home))
-            {
-                if(fd.is_directory()){
-                    std::string filePath = fd.path().generic_string();
-                    std::string homePath = home.generic_string();
-                    std::string shortenedPath = filePath.replace(0, homePath.length(), "~");
-                    //std::cout << shortenedPath << std::endl;
-                }
-            }
+            }            
             for (auto &p : std::filesystem::recursive_directory_iterator(home)){
                 if(p.path() != excludedFolderPath)
                 files.push_back(p);
             }
         }catch(std::exception &ex){
-            std::cout << KRED << &ex << std::endl; // WITHOUT IT THROWS what(): filesystem error: cannot increment recursive directory iterator: Permission denied
+            //std::cout << KRED << &ex << std::endl; // WITHOUT IT THROWS what(): filesystem error: cannot increment recursive directory iterator: Permission denied
         }
         //std::cout << "Found " << KMAG << files.size() << RST << " files." << std::endl; //USELESS FROM NOW
     }
